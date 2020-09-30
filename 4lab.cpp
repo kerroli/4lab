@@ -2,9 +2,9 @@
 #include <ctime>
 #include <vector>
 
-void veccopy(std::vector<int>& vecMain, std::vector<int>& vecWork);
-void swap(int& a, int& b);
-void printvec(std::vector<int>& vec);
+void veccopy(std::vector<int>& vecMain, std::vector<int>& vecWork); // функция копирования вектора
+void swap(int& a, int& b); // замена значений ячеек вектора
+void printvec(std::vector<int>& vec); // печать фектора
 int cocktailsort(std::vector<int>& vec);
 int mergesort(std::vector<int>& vec);
 int shellsort(std::vector<int>& vec);
@@ -18,24 +18,29 @@ int main() {
     std::vector<int> vecForMergesort(m);
     std::vector<int> vecForShellsort(m);
     std::vector<int> vec(m);
+    //
     std::srand(std::time(nullptr));
     std::cout << "Random digits:" << std::endl;
     for ( int i=0; i<m; i++){
         vec[i] = std::rand()%201-100;
     }
     printvec(vec);
-    veccopy(vec, vecForCocktailsort);
-    cocktailsort(vecForCocktailsort);
+    //
+    veccopy(vec, vecForCocktailsort); // копирование заданного вектора
+    cocktailsort(vecForCocktailsort); // сортировка ( НЕ РАБОТАЕТ, ИСПРАВИТЬ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
     std::cout << "Cocktail sort:" << std::endl;
-    printvec(vecForCocktailsort);
+    printvec(vecForCocktailsort); // печать отсортированного вектора
+    //
     veccopy(vec, vecForMergesort);
     mergesort(vecForMergesort);
     std::cout << "Merge sort sort:" << std::endl;
     printvec(vecForMergesort);
+    //
     veccopy(vec, vecForShellsort);
     shellsort(vecForShellsort);
     std::cout << "Shell sort:" << std::endl;
     printvec(vecForShellsort);
+    //
     return 0;
 }
 
