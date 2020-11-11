@@ -1,114 +1,123 @@
 #include <iostream>
 #include <ctime>
-#include <vector>
 
-void veccopy(std::vector<int>& vecMain, std::vector<int>& vecWork); // функция копирования вектора
-void swap(int& a, int& b); // замена значений ячеек вектора
-void printvec(std::vector<int>& vec); // печать фектора
-int cocktailsort(std::vector<int>& vec);
-int mergesort(std::vector<int>& vec);
-int shellsort(std::vector<int>& vec);
-
-
-int main() {
-    int m;
-    std::cout << "Amount of digits:" << std::endl;
-    std::cin >> m;
-    std::vector<int> vecForCocktailsort(m);
-    std::vector<int> vecForMergesort(m);
-    std::vector<int> vecForShellsort(m);
-    std::vector<int> vec(m);
-    //
-    std::srand(std::time(nullptr));
-    std::cout << "Random digits:" << std::endl;
-    for ( int i=0; i<m; i++){
-        vec[i] = std::rand()%201-100;
-    }
-    printvec(vec);
-    //
-    veccopy(vec, vecForCocktailsort); // копирование заданного вектора
-    cocktailsort(vecForCocktailsort); // сортировка ( НЕ РАБОТАЕТ, ИСПРАВИТЬ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
-    std::cout << "Cocktail sort:" << std::endl;
-    printvec(vecForCocktailsort); // печать отсортированного вектора
-    //
-    veccopy(vec, vecForMergesort);
-    mergesort(vecForMergesort);
-    std::cout << "Merge sort sort:" << std::endl;
-    printvec(vecForMergesort);
-    //
-    veccopy(vec, vecForShellsort);
-    shellsort(vecForShellsort);
-    std::cout << "Shell sort:" << std::endl;
-    printvec(vecForShellsort);
-    //
-    return 0;
+void swap_int(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
-void veccopy(std::vector<int>& vecMain, std::vector<int>& vecWork){
-    for ( int i=0; i<vecMain.size(); i++){
-        vecWork[i] = vecMain[i];
+void rand_mas(int mas[]) {
+    for (int i = 0; i < 30; i++) {
+        mas[i] = std::rand() % 201 - 100;
     }
 }
 
-void swap (int& a, int& b){
-    int t = a;
-    a = b;
-    b = t;
-}
-
-void printvec(std::vector<int>& vec){
-    for ( int i=0; i<vec.size(); i++)
-        std::cout << vec[i] << ' ';
+void print_mas(int mas[]) {
+    for (int i = 0; i < 30; i++) {
+        std::cout << mas[i] << ' ';
+    }
     std::cout << std::endl;
 }
 
-int cocktailsort(std::vector<int>& vec){
-    for (int i = 0; i < vec.size() / 2; i++)
+int cocktail_sort(int mas[], int n) {
+    int start = 0;
+    int end = n - 1;
+    bool flag = true;
+    while (flag) {
+        flag = false;
+        for (int i = start; i < end; i++) {
+            if (mas[i] > mas[i + 1]) {
+                swap_int(&mas[i], &mas[i + 1]);
+                flag = true;
+            }
+        }
+        end--;
+        for (int i = end - 1; i >= start; i--) {
+            if (mas[i] > mas[i + 1]) {
+                swap_int(&mas[i], &mas[i + 1]);
+                flag = true;
+            }
+        }
+        if (!flag) break;
+        start++;
+    }
+    return 0;
+}
+
+int merge_sort_halves(int mas[], int mid, int left, int right) {
+    int temp_left, temp_mid, iter, mas_new[right+1];
+    temp_left = left;
+    iter = temp_left;
+    temp_mid = mid + 1;
+    while ((temp_left <= mid) && (temp_mid <= right)) {
+        if (mas[temp_left] < mas[temp_mid]) {
+            mas_new[iter] = mas[temp_left];
+            iter++;
+            temp_left++;
+        }
+        else {
+            mas_new[iter] = mas[temp_mid];
+            iter++;
+            temp_mid++;
+        }
+    }
+    while (temp_left <= mid) {
+        mas_new[iter] = mas[temp_left];
+        iter++;
+        temp_left++;
+    }
+    while (temp_mid <= right) {
+        mas_new[iter] = mas[temp_mid];
+        iter++;
+        temp_mid++;
+    }
+    for (int i = left; i < iter; i++)
+        mas[i] = mas_new[i];
+    return 0;
+}
+
+int merge_sort(int mas[], int left, int right) {
+    int mid;
+    if (left < right) {
+        mid = (left + right) / 2;
+        merge_sort(mas, left, mid);
+        merge_sort(mas, mid + 1, right);
+        merge_sort_halves(mas, mid, left, right);
+    }
+    return 0;
+}
+
+int shell_sort(int mas[], int n) {
+    for (int gap = n/2; gap > 0; gap /= 2)
     {
-        bool point = true;
-        for (int x = i+1; x < vec.size()-i; x++)
+        for (int i = gap; i < n; i++)
         {
-            if (vec[x] > vec[x + 1])
-            {
-                swap(vec[x], vec[x + 1]);
-                point = false;
-            }
-        }
-        for (int x = vec.size()-i-2; x > i; x--)
-        {
-            if (vec[x - 1] > vec[x])
-            {
-                swap(vec[x - 1], vec[x]);
-                point = false;
-            }
-        }
-        if (point)
-        {
-            break;
+            int temp = mas[i];
+            int j;
+            for (j = i; j >= gap && mas[j - gap] > temp; j -= gap)
+                mas[j] = mas[j - gap];
+            mas[j] = temp;
         }
     }
     return 0;
 }
 
-int mergesort(std::vector<int>& vec){
-    return 0;
-}
-
-int shellsort(std::vector<int>& vec){
-    int a = vec.size() / 2;
-    while (a >= 1)
-    {
-        for (int i = a; i < vec.size(); i++)
-        {
-            int x = i;
-            while ((x >= a) && (vec[x-a] > vec[x]))
-            {
-                swap(vec[x], vec[x-a]);
-                x -= a;
-            }
-        }
-
-        a /= 2;
-    }
+int main() {
+    std::srand(std::time(nullptr));
+    int mas[30];
+    //
+    rand_mas(mas);
+    cocktail_sort(mas, 30);
+    print_mas(mas);
+    //
+    rand_mas(mas);
+    merge_sort(mas, 0, 29);
+    print_mas(mas);
+    //
+    rand_mas(mas);
+    shell_sort(mas, 30);
+    print_mas(mas);
+    //
     return 0;
 }
